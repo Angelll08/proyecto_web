@@ -1,18 +1,19 @@
 <?php
-// Configuración de la conexión a MySQL Local
-$host     = "localhost";
-$usuario  = "root";                // Usuario por defecto de MySQL
-$password = "12345678";                    // Coloca tu contraseña de MySQL local si tienes una
-$dbname   = "UPVM";        // Nombre de la base de datos en tu MySQL local
+// Obtener credenciales desde las variables de entorno de Render
+$host     = getenv('DB_HOST') ?: 'localhost';
+$user     = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASS') ?: '';
+$database = getenv('DB_NAME') ?: 'railway';
+$port     = getenv('DB_PORT') ?: 3306;
 
-// Crear la conexión
-$conn = new mysqli($host, $usuario, $password, $dbname);
+// Crear la conexión especificando el puerto
+$conn = new mysqli($host, $user, $password, $database, (int)$port);
 
-// Verificar si hay error en la conexión
+// Crear un alias por si otros scripts usan $conexion
+$conexion = $conn;
+
+// Verificar si hay errores
 if ($conn->connect_error) {
-    die("Error de conexión a la base de datos local: " . $conn->connect_error);
+    die("Error de conexión a la base de datos: " . $conn->connect_error);
 }
-
-// Configurar codificación UTF-8 para acentos y caracteres especiales
-$conn->set_charset("utf8");
 ?>
