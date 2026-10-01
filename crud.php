@@ -6,6 +6,15 @@ error_reporting(E_ALL);
 
 include_once('conexion.php');
 
+// Normalización de la variable de conexión para evitar incompatibilidades
+if (!isset($conn) && isset($conexion)) {
+    $conn = $conexion;
+}
+
+if (!$conn) {
+    die("Error crítico: No se pudo establecer la conexión a la base de datos.");
+}
+
 // 1. CREAR PRODUCTO (CREATE)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear'])) {
     $nombre      = trim($_POST['nombre']);
@@ -199,7 +208,7 @@ $resultado = $conn->query("SELECT * FROM productos ORDER BY id_producto DESC");
 									<input type="hidden" name="id_producto" value="<?php echo $prod['id_producto']; ?>">
 
 									<div class="tarjeta-header">
-										<h3>✏️️ Editando Producto</h3>
+										<h3>✏ Editando Producto</h3>
 										<span class="badge-id">#<?php echo $prod['id_producto']; ?></span>
 									</div>
 
