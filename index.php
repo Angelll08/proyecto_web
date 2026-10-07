@@ -67,6 +67,11 @@ include_once('conexion.php');
 			<a href="encuesta_inicio.php" rel="external" data-role="button" data-theme="a" data-icon="edit" data-ajax="false" class="btn-espacio">
 				📋 Realizar Encuesta
 			</a>
+
+			<!-- 4. Chat Grupal Temporal -->
+			<a href="chat.php" rel="external" data-role="button" data-theme="b" data-icon="comment" data-ajax="false" class="btn-espacio">
+				💬 Chat Grupal (En Vivo)
+			</a>
 		</div>
 	</div>
 </body>
