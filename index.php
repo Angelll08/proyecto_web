@@ -68,9 +68,14 @@ include_once('conexion.php');
 				📋 Realizar Encuesta
 			</a>
 
-			<!-- 4. Chat Grupal Temporal -->
+			<!-- 4. Chat Grupal En Vivo -->
 			<a href="chat.php" rel="external" data-role="button" data-theme="b" data-icon="comment" data-ajax="false" class="btn-espacio">
 				💬 Chat Grupal (En Vivo)
+			</a>
+
+			<!-- 5. Video de YouTube -->
+			<a href="video.php" rel="external" data-role="button" data-theme="a" data-icon="video" data-ajax="false" class="btn-espacio">
+				▶️ Ver Video Informativo
 			</a>
 		</div>
 	</div>
