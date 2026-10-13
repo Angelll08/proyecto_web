@@ -5,6 +5,18 @@ error_reporting(E_ALL);
 
 require 'conexion.php';
 
+// Por si conexion.php no define e() (como en Render)
+if (!function_exists('e')) {
+    function e($valor) {
+        return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+// Por si conexion.php no inicia la sesión
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Si el usuario ya inició sesión previamente, mandarlo directamente al menú
 if (isset($_SESSION['usuario_id'])) {
     header('Location: menu.php');
@@ -25,8 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['nombre']     = $usuario['nombre'];
-        
-        // Redirige al menú principal integrado
+
         header('Location: menu.php');
         exit;
     }
@@ -41,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="estilos.css">
     <style>
-        /* Estilo para la foto más grande dentro de la tarjeta */
         .header-login {
             text-align: center;
             margin-bottom: 1.2rem;
@@ -54,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
             margin-bottom: 10px;
         }
+        .header-login h1 { margin: 0; }
     </style>
 </head>
 <body>
     <main class="tarjeta">
-        <!-- Contenedor con la foto más grande -->
         <div class="header-login">
-            <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
+            <img class="foto-login" src="yo-edit.jpeg" alt="Mi foto">
             <h1>Iniciar sesión</h1>
         </div>
 
