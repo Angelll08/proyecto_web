@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <main class="tarjeta">
         <div class="header-login">
-            <img class="foto-login" src="yo-edit.jpeg" alt="Mi foto">
+            <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
             <h1>Iniciar sesión</h1>
         </div>
 
