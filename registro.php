@@ -1,10 +1,16 @@
 <?php
-// Copiar a: C:\xampp\htdocs\login\registro.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require 'conexion.php';
+
+// Por si conexion.php no define e() (como en Render)
+if (!function_exists('e')) {
+    function e($valor) {
+        return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
+    }
+}
 
 $error = '';
 $carreras = [
@@ -41,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: login.php?registrado=1');
             exit;
         } catch (PDOException $ex) {
-            if ($ex->getCode() !== '23000') {
+            // 23000 (MySQL) y 23505 (PostgreSQL) = valor duplicado
+            if (substr((string)$ex->getCode(), 0, 2) !== '23') {
                 throw $ex;
             }
             $error = 'Ese correo ya está registrado.';
