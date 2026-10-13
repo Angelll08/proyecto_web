@@ -41,24 +41,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="estilos.css">
     <style>
-        /* Estilo limpio para que la foto quede dentro de la tarjeta respetando tu CSS original */
+        /* Estilo para la foto más grande dentro de la tarjeta */
+        .header-login {
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
         .foto-login {
-            display: block;
-            width: 85px;
-            height: 85px;
+            width: 130px;
+            height: 130px;
             object-fit: cover;
-            margin: 0 auto 15px auto;
             border-radius: 50%;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <main class="tarjeta">
-        <!-- Foto colocada justo dentro de la tarjeta, arriba del título -->
-        <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
-
-        <h1>Iniciar sesión</h1>
+        <!-- Contenedor con la foto más grande -->
+        <div class="header-login">
+            <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
+            <h1>Iniciar sesión</h1>
+        </div>
 
         <?php if (isset($_GET['registrado'])): ?>
             <p class="exito">Cuenta creada. Ya puedes iniciar sesión.</p>
