@@ -43,18 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         .foto-login {
             display: block;
-            width: 140px;
-            height: 140px;
+            width: 90px;
+            height: 90px;
             object-fit: cover;
-            margin: 0 auto 1.2rem;
+            margin: 0 auto 1rem auto;
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
 <body>
     <main class="tarjeta">
-        <!-- Foto Personal -->
+        <!-- Foto Personal Ajustada -->
         <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
 
         <h1>Iniciar sesión</h1>
