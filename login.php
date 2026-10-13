@@ -41,22 +41,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="estilos.css">
     <style>
+        /* Contenedor general para alinear la foto y la tarjeta en columna */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Estilo idéntico al de tu menú para la foto */
         .foto-login {
             display: block;
-            width: 90px;
-            height: 90px;
+            width: 110px;
+            height: 110px;
             object-fit: cover;
             margin: 0 auto 1rem auto;
             border-radius: 50%;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Aseguramos que la tarjeta conserve su diseño original limpio */
+        .tarjeta {
+            /* Si tu CSS externo ya define la tarjeta, esto solo previene conflictos de posicionamiento */
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
-    <main class="tarjeta">
-        <!-- Foto Personal Ajustada -->
-        <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
 
+    <!-- Tu foto colocada arriba de la tarjeta, centrada idéntico al menú -->
+    <div>
+        <img class="foto-login" src="yo edit.jpeg" alt="Mi foto">
+    </div>
+
+    <main class="tarjeta">
         <h1>Iniciar sesión</h1>
 
         <?php if (isset($_GET['registrado'])): ?>
