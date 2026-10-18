@@ -58,5 +58,6 @@
 			<a href="index.php" rel="external" data-role="button" data-theme="b" data-ajax="false" data-icon="home">🏠 Volver al Inicio</a>
 		</div>
 	</div>
+	<script src="tracker.js"></script>
 </body>
 </html>
