@@ -5,19 +5,16 @@ error_reporting(E_ALL);
 
 require 'conexion.php';
 
-// Por si conexion.php no define e() (como en Render)
 if (!function_exists('e')) {
     function e($valor) {
         return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
     }
 }
 
-// Por si conexion.php no inicia la sesión
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Si el usuario ya inició sesión previamente, mandarlo directamente al menú
 if (isset($_SESSION['usuario_id'])) {
     header('Location: menu.php');
     exit;
@@ -29,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo   = trim($_POST['correo'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Seleccionamos también el campo 'rol'
     $stmt = $pdo->prepare('SELECT id, nombre, password_hash, rol FROM usuarios WHERE correo = ?');
     $stmt->execute([$correo]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['nombre']     = $usuario['nombre'];
-        $_SESSION['rol']        = $usuario['rol'] ?? 'usuario'; // Guarda 'admin' o 'usuario'
+        $_SESSION['rol']        = $usuario['rol'] ?? 'usuario';
 
         header('Location: menu.php');
         exit;
@@ -67,6 +63,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 10px;
         }
         .header-login h1 { margin: 0; }
+        .aviso-cookies-login {
+            font-size: 0.8rem;
+            color: #666;
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: justify;
+            border-left: 3px solid #3388cc;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +100,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <p>¿No tienes cuenta? <a href="registro.php">Regístrate</a></p>
+
+        <!-- Aviso de Privacidad y Cookies integrado en el login -->
+        <div class="aviso-cookies-login">
+            <p style="margin: 0;">
+                🔒 <strong>Aviso de Privacidad y Cookies:</strong> Al iniciar sesión en este sistema, aceptas el uso de cookies de sesión y el almacenamiento de métricas de actividad (clics, páginas visitadas y tiempos de permanencia) con fines de análisis y control administrativo de la plataforma.
+            </p>
+        </div>
     </main>
     <script src="tracker.js"></script>
 </body>
