@@ -85,11 +85,7 @@ if (!isset($_SESSION['usuario_id'])) {
 			<a href="video.php" rel="external" data-role="button" data-theme="a" data-icon="video" data-ajax="false" class="btn-espacio">
 				▶️ Ver Video Informativo
 			</a>
-		</div>
 	</div>
-</body>
-</html>
-		</div>
-	</div>
+    <script src="tracker.js"></script>
 </body>
 </html>
