@@ -93,5 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <p>¿No tienes cuenta? <a href="registro.php">Regístrate</a></p>
     </main>
+    <script src="tracker.js"></script>
 </body>
 </html>
