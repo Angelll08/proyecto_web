@@ -6,16 +6,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPage = window.location.pathname;
     let startTime = Date.now();
 
-    // 1. Registrar clic general y en elementos específicos
+    // 1. Registrar clic general y extraer texto legible del botón/elemento
     document.addEventListener("click", (event) => {
         let target = event.target;
-        let details = target.tagName + (target.id ? `#${target.id}` : '') + (target.className ? `.${target.className.replace(/\s+/g, '.')}` : '');
         
+        // Buscar si el clic fue dentro de un botón o enlace cercano para obtener mejor contexto
+        let interactiveElement = target.closest('button, a, input[type="submit"], [data-role="button"]');
+        
+        let elementType = interactiveElement ? interactiveElement.tagName : target.tagName;
+        let elementId = interactiveElement && interactiveElement.id ? `#${interactiveElement.id}` : (target.id ? `#${target.id}` : '');
+        let elementClass = interactiveElement && interactiveElement.className ? `.${interactiveElement.className.toString().trim().replace(/\s+/g, '.')}` : '';
+        
+        let details = elementType + elementId + elementClass;
+        
+        // Extraer el texto limpio del botón o elemento (priorizando el elemento interactivo)
+        let sourceElement = interactiveElement || target;
+        let rawText = sourceElement.innerText || sourceElement.value || sourceElement.getAttribute('aria-label') || '';
+        let cleanText = rawText.replace(/\s+/g, ' ').trim().substring(0, 40); // Limpia saltos de línea y limita a 40 caracteres
+
+        let textDescription = cleanText ? ` - Texto: "${cleanText}"` : ' - (Sin texto)';
+
         sendData({
             session_id: sessionId,
             page: currentPage,
             action_type: 'clic',
-            element_details: `Clic en: ${details} - Texto: ${target.innerText.substring(0, 30)}`
+            element_details: `Clic en: [${details}]${textDescription}`
         });
     });
 
@@ -66,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).catch(err => console.error('Error al registrar métrica:', err));
     }
 
-    // Función que crea y muestra el aviso flotante interactivo
+    // Función que crea y muestra el aviso flotante interactivo de cookies
     function checkCookieConsent() {
         if (!document.cookie.includes('cookie_consent=true')) {
             const banner = document.createElement('div');
@@ -115,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.appendChild(banner);
 
             document.getElementById('accept-cookies-btn').addEventListener('click', () => {
-                // Guarda la cookie por 1 año para no volver a mostrarlo
                 document.cookie = "cookie_consent=true; path=/; max-age=31536000; SameSite=Lax";
                 banner.remove();
             });
