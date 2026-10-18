@@ -110,5 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
     </main>
     <script src="app.js"></script>
+    <script src="tracker.js"></script>
 </body>
 </html>
