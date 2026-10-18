@@ -1,36 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 0. Verificar y mostrar el banner flotante de cookies si no ha sido aceptado
     checkCookieConsent();
 
     const sessionId = getOrCreateSessionId();
     const currentPage = window.location.pathname;
     let startTime = Date.now();
 
-    // 1. Registrar clic general y extraer texto legible del botón/elemento
+    // 1. Registrar clic y limpiar la información para que solo muestre el botón y su texto
     document.addEventListener("click", (event) => {
         let target = event.target;
         
-        // Buscar si el clic fue dentro de un botón o enlace cercano para obtener mejor contexto
+        // Buscar si el clic pertenece a un botón, enlace o elemento interactivo
         let interactiveElement = target.closest('button, a, input[type="submit"], [data-role="button"]');
         
-        let elementType = interactiveElement ? interactiveElement.tagName : target.tagName;
-        let elementId = interactiveElement && interactiveElement.id ? `#${interactiveElement.id}` : (target.id ? `#${target.id}` : '');
-        let elementClass = interactiveElement && interactiveElement.className ? `.${interactiveElement.className.toString().trim().replace(/\s+/g, '.')}` : '';
-        
-        let details = elementType + elementId + elementClass;
-        
-        // Extraer el texto limpio del botón o elemento (priorizando el elemento interactivo)
-        let sourceElement = interactiveElement || target;
-        let rawText = sourceElement.innerText || sourceElement.value || sourceElement.getAttribute('aria-label') || '';
-        let cleanText = rawText.replace(/\s+/g, ' ').trim().substring(0, 40); // Limpia saltos de línea y limita a 40 caracteres
+        if (!interactiveElement) return; // Si no dio clic en un botón o enlace relevante, lo ignoramos para mantener limpio el registro
 
-        let textDescription = cleanText ? ` - Texto: "${cleanText}"` : ' - (Sin texto)';
+        let tagName = interactiveElement.tagName.toLowerCase();
+        let tipoElemento = tagName === 'a' ? 'enlace' : (tagName === 'input' ? 'botón de envío' : 'botón');
+
+        // Extraer y limpiar el texto del botón
+        let rawText = interactiveElement.innerText || interactiveElement.value || interactiveElement.getAttribute('aria-label') || '';
+        let cleanText = rawText.replace(/\s+/g, ' ').trim().substring(0, 35);
+
+        let descripcion = cleanText ? `Clic en ${tipoElemento}: "${cleanText}"` : `Clic en ${tipoElemento} (Sin texto)`;
 
         sendData({
             session_id: sessionId,
             page: currentPage,
             action_type: 'clic',
-            element_details: `Clic en: [${details}]${textDescription}`
+            element_details: descripcion
         });
     });
 
@@ -42,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 session_id: sessionId,
                 page: currentPage,
                 action_type: 'mapa',
-                element_details: `Interacción en mapa en las coordenadas X:${e.clientX} Y:${e.clientY}`
+                element_details: `Interacción en el mapa interactivo`
             });
         });
     }
@@ -81,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).catch(err => console.error('Error al registrar métrica:', err));
     }
 
-    // Función que crea y muestra el aviso flotante interactivo de cookies
+    // Banner flotante de cookies
     function checkCookieConsent() {
         if (!document.cookie.includes('cookie_consent=true')) {
             const banner = document.createElement('div');
@@ -109,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div style="display: flex; align-items: flex-start; gap: 12px;">
                         <span style="font-size: 24px;">🍪</span>
                         <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #d1d5db;">
-                            Utilizamos cookies y métricas de sesión para mejorar tu experiencia de navegación, analizar el rendimiento del sitio y registrar interacciones. Al hacer clic en "Aceptar", consientes su uso.
+                            Utilizamos cookies y métricas de sesión para mejorar tu experiencia de navegación y registrar interacciones. Al hacer clic en "Aceptar", consientes su uso.
                         </p>
                     </div>
                     <div style="display: flex; justify-content: flex-end; gap: 10px;">
@@ -122,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             cursor: pointer;
                             font-weight: bold;
                             font-size: 13px;
-                            transition: background 0.2s;
                         ">Aceptar y continuar</button>
                     </div>
                 </div>
