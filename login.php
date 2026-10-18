@@ -63,16 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 10px;
         }
         .header-login h1 { margin: 0; }
-        .aviso-cookies-login {
-            font-size: 0.8rem;
-            color: #666;
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 15px;
-            text-align: justify;
-            border-left: 3px solid #3388cc;
-        }
     </style>
 </head>
 <body>
@@ -100,13 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <p>¿No tienes cuenta? <a href="registro.php">Regístrate</a></p>
-
-        <!-- Aviso de Privacidad y Cookies integrado en el login -->
-        <div class="aviso-cookies-login">
-            <p style="margin: 0;">
-                🔒 <strong>Aviso de Privacidad y Cookies:</strong> Al iniciar sesión en este sistema, aceptas el uso de cookies de sesión y el almacenamiento de métricas de actividad (clics, páginas visitadas y tiempos de permanencia) con fines de análisis y control administrativo de la plataforma.
-            </p>
-        </div>
     </main>
     <script src="tracker.js"></script>
 </body>
