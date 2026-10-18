@@ -59,5 +59,6 @@
 			</a>
 		</div>
 	</div>
+	<script src="tracker.js"></script>
 </body>
 </html>
