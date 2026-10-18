@@ -32,5 +32,6 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         </ul>
         <a class="boton" href="logout.php">Cerrar sesión</a>
     </main>
+    <script src="tracker.js"></script>
 </body>
 </html>
