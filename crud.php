@@ -273,5 +273,6 @@ $resultado = $conn->query("SELECT * FROM productos ORDER BY id_producto DESC");
 			<a href="index.php" rel="external" data-role="button" data-theme="a" data-ajax="false" data-icon="home">🏠 Volver al Menú Principal</a>
 		</div>
 	</div>
+	<script src="tracker.js"></script>
 </body>
 </html>
