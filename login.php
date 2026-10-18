@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo   = trim($_POST['correo'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $stmt = $pdo->prepare('SELECT id, nombre, password_hash FROM usuarios WHERE correo = ?');
+    // Seleccionamos también el campo 'rol'
+    $stmt = $pdo->prepare('SELECT id, nombre, password_hash, rol FROM usuarios WHERE correo = ?');
     $stmt->execute([$correo]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_regenerate_id(true);
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['nombre']     = $usuario['nombre'];
+        $_SESSION['rol']        = $usuario['rol'] ?? 'usuario'; // Guarda 'admin' o 'usuario'
 
         header('Location: menu.php');
         exit;
