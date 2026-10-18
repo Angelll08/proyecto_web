@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (match) {
             return match[2];
         } else {
-            let newId = 'sess_' + Math.random().toString(36.substring(2)) + Date.now();
+            let newId = 'sess_' + Math.random().toString(36).substring(2) + Date.now();
             document.cookie = `${cookieName}=${newId}; path=/; max-age=86400; SameSite=Lax`;
             return newId;
         }
