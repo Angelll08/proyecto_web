@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 0. Verificar y mostrar el banner flotante de cookies si no ha sido aceptado
+    checkCookieConsent();
+
     const sessionId = getOrCreateSessionId();
     const currentPage = window.location.pathname;
     let startTime = Date.now();
@@ -61,5 +64,61 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).catch(err => console.error('Error al registrar métrica:', err));
+    }
+
+    // Función que crea y muestra el aviso flotante interactivo
+    function checkCookieConsent() {
+        if (!document.cookie.includes('cookie_consent=true')) {
+            const banner = document.createElement('div');
+            banner.id = 'cookie-consent-banner';
+            banner.innerHTML = `
+                <div style="
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 90%;
+                    max-width: 600px;
+                    background: #1f2937;
+                    color: #f9fafb;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                    z-index: 99999;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    font-family: sans-serif;
+                    border: 1px solid #374151;
+                ">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <span style="font-size: 24px;">🍪</span>
+                        <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #d1d5db;">
+                            Utilizamos cookies y métricas de sesión para mejorar tu experiencia de navegación, analizar el rendimiento del sitio y registrar interacciones. Al hacer clic en "Aceptar", consientes su uso.
+                        </p>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button id="accept-cookies-btn" style="
+                            background: #2563eb;
+                            color: white;
+                            border: none;
+                            padding: 8px 18px;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 13px;
+                            transition: background 0.2s;
+                        ">Aceptar y continuar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(banner);
+
+            document.getElementById('accept-cookies-btn').addEventListener('click', () => {
+                // Guarda la cookie por 1 año para no volver a mostrarlo
+                document.cookie = "cookie_consent=true; path=/; max-age=31536000; SameSite=Lax";
+                banner.remove();
+            });
+        }
     }
 });
