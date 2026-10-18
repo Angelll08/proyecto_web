@@ -196,5 +196,6 @@
 			fetchMessages();
 		});
 	</script>
+	<script src="tracker.js"></script>
 </body>
 </html>
