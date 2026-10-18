@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Rastrear interacción con mapas (si usas contenedores de mapas)
+    // 2. Rastrear interacción con mapas
     const mapContainer = document.querySelector('#map, .map-container, iframe[src*="map"]');
     if (mapContainer) {
         mapContainer.addEventListener("click", (e) => {
@@ -31,9 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 3. Registrar tiempo en la página al salir o cambiar de pestaña
     window.addEventListener("beforeunload", () => {
-        let timeSpent = Math.round((Date.now() - startTime) / 1000); // en segundos
+        let timeSpent = Math.round((Date.now() - startTime) / 1000);
         
-        // Usamos sendBeacon para asegurar el envío antes de cerrar la página
         const data = JSON.stringify({
             session_id: sessionId,
             page: currentPage,
