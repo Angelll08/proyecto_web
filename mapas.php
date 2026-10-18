@@ -90,5 +90,6 @@
 
 	<!-- Script de API de Google Maps -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRHdUFlfmkChy6XYji_3yc5YD9VlKvWKg&callback=initMap&loading=async" async></script>
+	<script src="tracker.js"></script>
 </body>
 </html>
