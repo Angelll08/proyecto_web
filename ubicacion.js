@@ -110,3 +110,10 @@ cargarHistorial().then(() => {
         mapa.fitBounds(capaGuardadas.getBounds(), { maxZoom: 16, padding: [20, 20] });
     }
 });
+
+$(document).on('pageshow', '#pagina-ubicacion', function () {
+    mapa.invalidateSize();
+    if (capaGuardadas.getLayers().length) {
+        mapa.fitBounds(capaGuardadas.getBounds(), { maxZoom: 16, padding: [20, 20] });
+    }
+});
