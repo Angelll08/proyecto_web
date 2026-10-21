@@ -91,6 +91,16 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
 				▶️ Ver Video Informativo
 			</a>
 
+			<!-- 6. Galería de Fotos (API) -->
+			<a href="api/fotos.php" rel="external" data-role="button" data-theme="a" data-icon="camera" data-ajax="false" class="btn-espacio">
+				📸 Ver Galería de Fotos
+			</a>
+
+			<!-- 7. Subir Nueva Foto / Archivo -->
+			<a href="api/subir.php" rel="external" data-role="button" data-theme="a" data-icon="plus" data-ajax="false" class="btn-espacio">
+				📤 Subir Archivo / Foto
+			</a>
+
 			<!-- BOTÓN EXCLUSIVO DE ADMINISTRADOR -->
 			<?php if ($esAdmin): ?>
 				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
