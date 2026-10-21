@@ -101,14 +101,7 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
 				📍 Capturar Ubicación
 			</a>
 
-			<!-- BOTÓN EXCLUSIVO DE ADMINISTRADOR -->
-			<?php if ($esAdmin): ?>
-				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-				<a href="admin_stats.php" rel="external" data-role="button" data-theme="delete" data-icon="gear" data-ajax="false" class="btn-espacio">
-					⚙️ Panel de Administración (Métricas y Admins)
-				</a>
-			<?php endif; ?>
-
+						<!-- BOTÓN EXCLUSIVO DE ADMINISTRADOR -->
 			<?php if ($esAdmin): ?>
 				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
 				<a href="admin_stats.php" rel="external" data-role="button" data-theme="delete" data-icon="gear" data-ajax="false" class="btn-espacio">
