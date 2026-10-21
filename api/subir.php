@@ -1,7 +1,6 @@
 <?php
-// Copiar a: api/subir.php
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Evita que los errores de PHP salgan como HTML
+ini_set('display_errors', 0);
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -23,7 +22,7 @@ try {
 
     $foto = $_FILES['foto'] ?? null;
     if (!$foto || $foto['error'] !== UPLOAD_ERR_OK) {
-        responder(400, ['error' => 'No llegó ninguna foto.']);
+        responder(400, ['error' => 'No llegó ninguna foto o hubo un error de subida (Código: ' . ($foto['error'] ?? 'desconocido') . ').']);
     }
 
     if ($foto['size'] > 5 * 1024 * 1024) {
@@ -39,15 +38,23 @@ try {
     $usuario = preg_replace('/[^A-Za-z0-9]/', '', $_SESSION['nombre'] ?? 'usuario') ?: 'usuario';
     $archivo = $usuario . '_' . date('Ymd-His') . '_' . bin2hex(random_bytes(2)) . '.' . $tipos[$tipo];
 
-    // Ruta segura hacia la carpeta subidas en la raíz del proyecto
     $rutaDir = __DIR__ . '/../subidas/';
+    
+    // Verificar si la carpeta existe y tiene permisos de escritura
     if (!is_dir($rutaDir)) {
-        mkdir($rutaDir, 0755, true);
+        @mkdir($rutaDir, 0777, true);
+    }
+
+    if (!is_writable($rutaDir)) {
+        responder(500, ['error' => 'La carpeta subidas/ no tiene permisos de escritura en el servidor.']);
     }
 
     $ruta = $rutaDir . $archivo;
+    
+    // Intentar mover el archivo y capturar el error exacto si falla
     if (!move_uploaded_file($foto['tmp_name'], $ruta)) {
-        responder(500, ['error' => 'No se pudo guardar la foto en el servidor.']);
+        $errorSrv = error_get_last();
+        responder(500, ['error' => 'Fallo al mover archivo: ' . ($errorSrv['message'] ?? 'Error desconocido en disco')]);
     }
 
     // Registro en la base de datos de Railway
@@ -65,9 +72,9 @@ try {
 
 } catch (Exception $e) {
     if (isset($ruta) && file_exists($ruta)) {
-        unlink($ruta); // Borra el archivo si falla la base de datos
+        unlink($ruta);
     }
     http_response_code(500);
-    echo json_encode(['error' => 'Error en el servidor: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Excepción: ' . $e->getMessage()]);
     exit;
 }
