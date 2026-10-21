@@ -96,6 +96,11 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
    				 📷 Ver Galería y Subir Fotos
 			</a>
 
+			<!-- 7. Capturar ubicación -->
+			<a href="ubicacion.php" rel="external" data-role="button" data-theme="b" data-icon="location" data-ajax="false" class="btn-espacio">
+				📍 Capturar Ubicación
+			</a>
+
 			<!-- BOTÓN EXCLUSIVO DE ADMINISTRADOR -->
 			<?php if ($esAdmin): ?>
 				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
@@ -103,6 +108,17 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
 					⚙️ Panel de Administración (Métricas y Admins)
 				</a>
 			<?php endif; ?>
+
+			<?php if ($esAdmin): ?>
+				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+				<a href="admin_stats.php" rel="external" data-role="button" data-theme="delete" data-icon="gear" data-ajax="false" class="btn-espacio">
+					⚙️ Panel de Administración (Métricas y Admins)
+				</a>
+				<a href="admin_ubicaciones.php" rel="external" data-role="button" data-theme="delete" data-icon="location" data-ajax="false" class="btn-espacio">
+					🗺️ Ubicaciones de Usuarios (Admin)
+				</a>
+			<?php endif; ?>
+
 		</div>
 		<script src="tracker.js"></script>
 	</div>
