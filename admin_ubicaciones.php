@@ -17,9 +17,11 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
     exit();
 }
 
-function e($texto)
-{
-    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+if (!function_exists('e')) {
+    function e($texto)
+    {
+        return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+    }
 }
 
 // Últimas 200 ubicaciones de todos los usuarios
@@ -33,85 +35,99 @@ $filas = $pdo->query(
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubicaciones de usuarios</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 16px;
-            font-family: system-ui, sans-serif;
-            background: #eef2f7;
-            color: #1f2937;
-        }
-        .panel {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-        }
-        h1 { margin-top: 0; font-size: 1.5rem; }
-        .volver {
-            display: inline-block;
-            margin-bottom: 16px;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .tabla-contenedor { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
-        th { background: #f1f5f9; }
-        tr:hover td { background: #f8fafc; }
-        a.mapa { color: #2563eb; }
-        .vacio { padding: 16px; background: #dbeafe; color: #1e40af; border-radius: 8px; }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Ubicaciones de Usuarios - Administración</title>
+	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script>
+		$(document).bind("mobileinit", function(){
+			$.mobile.ajaxEnabled = false;
+		});
+	</script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<style>
+		.contenedor-admin {
+			max-width: 900px;
+			margin: 0 auto;
+		}
+		.btn-espacio {
+			margin-bottom: 12px !important;
+		}
+		.tabla-admin {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: .9rem;
+		}
+		.tabla-admin th, .tabla-admin td {
+			padding: .6em;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+		.tabla-admin thead th { background: #f1f5f9; }
+		.vacio {
+			padding: 10px;
+			border-radius: .3125em;
+			background: #dbeafe;
+			color: #1e40af;
+		}
+	</style>
 </head>
 <body>
-    <div class="panel">
-        <a class="volver" href="menu.php">← Volver al menú</a>
-        <h1>Ubicaciones de usuarios</h1>
-        <p>Total mostrado: <strong><?= count($filas) ?></strong> (máximo 200, las más recientes primero)</p>
+	<div data-role="page" id="pagina-admin-ubicaciones">
+		<div data-role="header" data-theme="b">
+			<a href="menu.php" rel="external" data-icon="home" data-ajax="false" class="ui-btn-left">Menú</a>
+			<h1>Ubicaciones</h1>
+			<a href="logout.php" data-icon="power" data-iconpos="notext" class="ui-btn-right" data-ajax="false">Cerrar Sesión</a>
+		</div>
 
-        <?php if (!$filas): ?>
-            <p class="vacio">Todavía nadie ha guardado una ubicación.</p>
-        <?php else: ?>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Usuario</th>
-                            <th>Latitud</th>
-                            <th>Longitud</th>
-                            <th>Precisión</th>
-                            <th>Fecha</th>
-                            <th>Mapa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($filas as $f): ?>
-                            <tr>
-                                <td><?= (int) $f['id'] ?></td>
-                                <td><?= e($f['nombre']) ?></td>
-                                <td><?= e($f['latitud']) ?></td>
-                                <td><?= e($f['longitud']) ?></td>
-                                <td>±<?= (int) $f['precision_m'] ?> m</td>
-                                <td><?= e($f['creado_en']) ?></td>
-                                <td>
-                                    <a class="mapa" target="_blank" rel="noopener"
-                                       href="https://www.openstreetmap.org/?mlat=<?= e($f['latitud']) ?>&mlon=<?= e($f['longitud']) ?>#map=17/<?= e($f['latitud']) ?>/<?= e($f['longitud']) ?>">
-                                        Ver
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-    </div>
+		<div role="main" class="ui-content contenedor-admin">
+			<p><span style="background: #ff9800; color: white; padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 0.85em;">ROL: ADMINISTRADOR</span></p>
+			<h2>Ubicaciones de usuarios</h2>
+			<p>Total mostrado: <strong><?= count($filas) ?></strong> (máximo 200, las más recientes primero)</p>
+
+			<?php if (!$filas): ?>
+				<p class="vacio">Todavía nadie ha guardado una ubicación.</p>
+			<?php else: ?>
+				<table data-role="table" data-mode="reflow" class="ui-responsive tabla-admin">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Usuario</th>
+							<th>Latitud</th>
+							<th>Longitud</th>
+							<th>Precisión</th>
+							<th>Fecha</th>
+							<th>Mapa</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($filas as $f): ?>
+							<tr>
+								<td><?= (int) $f['id'] ?></td>
+								<td><?= e($f['nombre']) ?></td>
+								<td><?= e($f['latitud']) ?></td>
+								<td><?= e($f['longitud']) ?></td>
+								<td>±<?= (int) $f['precision_m'] ?> m</td>
+								<td><?= e($f['creado_en']) ?></td>
+								<td>
+									<a target="_blank" rel="external noopener" data-ajax="false"
+									   href="https://www.openstreetmap.org/?mlat=<?= e($f['latitud']) ?>&mlon=<?= e($f['longitud']) ?>#map=17/<?= e($f['latitud']) ?>/<?= e($f['longitud']) ?>">
+										Ver
+									</a>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php endif; ?>
+
+			<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+			<a href="menu.php" rel="external" data-role="button" data-theme="a" data-icon="arrow-l" data-ajax="false" class="btn-espacio">
+				Volver al Menú
+			</a>
+		</div>
+		<script src="tracker.js"></script>
+	</div>
 </body>
 </html>
