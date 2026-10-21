@@ -1,10 +1,13 @@
 <?php
 // Copiar a: C:\xampp\htdocs\foto\api\subir.php
 // Servicio que RECIBE una foto:  POST api/subir.php  (multipart/form-data, campo "foto")
+<?php
+// Copiar a: api/subir.php
+require_once __DIR__ . '/../sesion.php';
+require_once __DIR__ . '/../conexion.php'; // <-- ESTO FALTABA (Conexión a la base de datos)
 
-require __DIR__ . '/../sesion.php';
 header('Content-Type: application/json; charset=utf-8');
-date_default_timezone_set('America/Mexico_City'); // XAMPP trae Europe/Berlin por defecto
+date_default_timezone_set('America/Mexico_City');
 
 function responder($codigo, $datos)
 {
@@ -17,29 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     responder(405, ['error' => 'Usa POST.']);
 }
 
-// 🔗 PISTA LOGIN: con la sesión de LOGIN, aquí se respondería 401 si no hay usuario:
-// if (!isset($_SESSION['usuario_id'])) responder(401, ['error' => 'Inicia sesión.']);
-
 $foto = $_FILES['foto'] ?? null;
 if (!$foto || $foto['error'] !== UPLOAD_ERR_OK) {
-    responder(400, ['error' => 'No llego ninguna foto.']);
+    responder(400, ['error' => 'No llegó ninguna foto.']);
 }
 
-// Validación corregida de tamaño (5 MB máximo: 5 * 1024 * 1024 bytes)
+// Validación de tamaño (5 MB máximo)
 if ($foto['size'] > 5 * 1024 * 1024) {
-    responder(400, ['error' => 'La foto pesa mas de 5 MB.']);
+    responder(400, ['error' => 'La foto pesa más de 5 MB.']);
 }
 
-// Nunca confiar en el cliente: la extension y el tipo que manda el navegador se pueden falsear.
-// finfo revisa el CONTENIDO real del archivo.
+// Validación real del tipo de archivo con finfo
 $tipos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
 $tipo  = (new finfo(FILEINFO_MIME_TYPE))->file($foto['tmp_name']);
 if (!isset($tipos[$tipo])) {
-    responder(400, ['error' => 'Eso no es una imagen.']);
+    responder(400, ['error' => 'Eso no es una imagen válida.']);
 }
 
-// El nombre lo pone el SERVIDOR: usuario de la sesion + fecha + 4 caracteres al azar.
-// Del nombre del usuario solo se dejan letras y numeros (ni espacios, ni acentos, ni "../").
+// Generación segura del nombre del archivo
 $usuario = preg_replace('/[^A-Za-z0-9]/', '', $_SESSION['nombre'] ?? 'usuario') ?: 'usuario';
 $archivo = $usuario . '_' . date('Ymd-His') . '_' . bin2hex(random_bytes(2)) . '.' . $tipos[$tipo];
 
@@ -48,8 +46,7 @@ if (!move_uploaded_file($foto['tmp_name'], $ruta)) {
     responder(500, ['error' => 'No se pudo guardar la foto en el servidor.']);
 }
 
-// El archivo ya esta en el disco; ahora se REGISTRA en la tabla fotos.
-// usuario_id: NULL para invitados; con LOGIN vendria de la sesion.
+// Registro en la base de datos usando PDO
 $sql = 'INSERT INTO fotos (usuario_id, nombre, archivo, tipo, bytes) VALUES (?, ?, ?, ?, ?)';
 try {
     $pdo->prepare($sql)->execute([
@@ -60,8 +57,11 @@ try {
         $foto['size']
     ]);
 } catch (PDOException $error) {
-    unlink($ruta); // sin registro no se queda el archivo huerfano
+    if (file_exists($ruta)) {
+        unlink($ruta); // Borra el archivo físico si falla el registro en la BD
+    }
     responder(500, ['error' => 'No se pudo registrar la foto en la base de datos.']);
 }
 
-responder(201, ['archivo' => $archivo, 'url' => '../subidas/' . $archivo]); // 201 = creado
+// Respuesta exitosa (201 = Creado) con la ruta correcta desde la raíz
+responder(201, ['archivo' => $archivo, 'url' => 'subidas/' . $archivo]);
