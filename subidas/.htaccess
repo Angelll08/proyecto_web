@@ -1,0 +1,8 @@
+# Copiar a: subidas/.htaccess
+# Aquí solo viven fotos. Si alguien lograra subir un .php, Apache se negaría a ejecutarlo[cite: 4].
+<FilesMatch "\.(php|phtml|phar)$">
+    Require all denied
+</FilesMatch>
+
+# No mostrar el listado de la carpeta al abrir /foto/subidas/[cite: 4]
+Options -Indexes
