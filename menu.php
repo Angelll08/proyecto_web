@@ -110,6 +110,9 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin');
 				<a href="admin_ubicaciones.php" rel="external" data-role="button" data-theme="delete" data-icon="location" data-ajax="false" class="btn-espacio">
 					🗺️ Ubicaciones de Usuarios (Admin)
 				</a>
+				<a href="admin_accesos.php" rel="external" data-role="button" data-theme="delete" data-icon="eye" data-ajax="false" class="btn-espacio">
+					🌐 Accesos e IPs de Usuarios (Admin)
+				</a>
 			<?php endif; ?>
 
 		</div>
