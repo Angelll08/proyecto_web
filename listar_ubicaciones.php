@@ -13,6 +13,14 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+// La base guarda la hora en UTC: aquí se convierte a hora de México
+function horaMx($fechaUtc)
+{
+    $fecha = new DateTime($fechaUtc, new DateTimeZone('UTC'));
+    $fecha->setTimezone(new DateTimeZone('America/Mexico_City'));
+    return $fecha->format('d/m/Y H:i:s');
+}
+
 // Solo las ubicaciones del usuario que inició sesión
 $consulta = $pdo->prepare(
     'SELECT nombre, latitud, longitud, precision_m, creado_en
@@ -28,7 +36,7 @@ $ubicaciones = array_map(fn($f) => [
     'latitud'     => (float) $f['latitud'],
     'longitud'    => (float) $f['longitud'],
     'precision_m' => (int) $f['precision_m'],
-    'creado_en'   => $f['creado_en'],
+    'creado_en'   => horaMx($f['creado_en']),
 ], $filas);
 
 echo json_encode($ubicaciones);
