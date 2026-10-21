@@ -7,6 +7,10 @@ RUN docker-php-ext-install mysqli pdo_mysql
 # 3. Copiado del proyecto al directorio de Apache
 COPY . /var/www/html/
 
+RUN mkdir -p /var/www/html/subidas \
+ && chown -R www-data:www-data /var/www/html/subidas \
+ && chmod -R 775 /var/www/html/subidas
+
 # 4. Configuración del puerto dinámico para Render
 ENV PORT 10000
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
