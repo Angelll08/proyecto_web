@@ -24,6 +24,16 @@ if (!function_exists('e')) {
     }
 }
 
+if (!function_exists('horaMx')) {
+    // La base guarda la hora en UTC: aquí se convierte a hora de México
+    function horaMx($fechaUtc)
+    {
+        $fecha = new DateTime($fechaUtc, new DateTimeZone('UTC'));
+        $fecha->setTimezone(new DateTimeZone('America/Mexico_City'));
+        return $fecha->format('d/m/Y H:i:s');
+    }
+}
+
 // Últimas 200 ubicaciones de todos los usuarios
 $filas = $pdo->query(
     'SELECT id, usuario_id, nombre, latitud, longitud, precision_m, creado_en
@@ -97,7 +107,7 @@ $filas = $pdo->query(
 							<th>Latitud</th>
 							<th>Longitud</th>
 							<th>Precisión</th>
-							<th>Fecha</th>
+							<th>Fecha (hora de México)</th>
 							<th>Mapa</th>
 						</tr>
 					</thead>
@@ -109,7 +119,7 @@ $filas = $pdo->query(
 								<td><?= e($f['latitud']) ?></td>
 								<td><?= e($f['longitud']) ?></td>
 								<td>±<?= (int) $f['precision_m'] ?> m</td>
-								<td><?= e($f['creado_en']) ?></td>
+								<td><?= e(horaMx($f['creado_en'])) ?></td>
 								<td>
 									<a target="_blank" rel="external noopener" data-ajax="false"
 									   href="https://www.openstreetmap.org/?mlat=<?= e($f['latitud']) ?>&mlon=<?= e($f['longitud']) ?>#map=17/<?= e($f['latitud']) ?>/<?= e($f['longitud']) ?>">
