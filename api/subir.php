@@ -1,16 +1,20 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
+// Activar el almacenamiento en búfer para capturar cualquier salida HTML o error inesperado
+ob_start();
 
 header('Content-Type: application/json; charset=utf-8');
 
 try {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0); // Oculta errores en pantalla para no romper el JSON
+
     require_once __DIR__ . '/../sesion.php';
     require_once __DIR__ . '/../conexion.php';
 
     date_default_timezone_set('America/Mexico_City');
 
     function responder($codigo, $datos) {
+        if (ob_get_length()) ob_clean(); // Limpiar cualquier salida previa
         http_response_code($codigo);
         echo json_encode($datos);
         exit;
@@ -22,7 +26,7 @@ try {
 
     $foto = $_FILES['foto'] ?? null;
     if (!$foto || $foto['error'] !== UPLOAD_ERR_OK) {
-        responder(400, ['error' => 'No llegó ninguna foto o hubo un error de subida (Código: ' . ($foto['error'] ?? 'desconocido') . ').']);
+        responder(400, ['error' => 'No llegó ninguna foto (Código de error: ' . ($foto['error'] ?? 'desconocido') . ').']);
     }
 
     if ($foto['size'] > 5 * 1024 * 1024) {
@@ -39,22 +43,14 @@ try {
     $archivo = $usuario . '_' . date('Ymd-His') . '_' . bin2hex(random_bytes(2)) . '.' . $tipos[$tipo];
 
     $rutaDir = __DIR__ . '/../subidas/';
-    
-    // Verificar si la carpeta existe y tiene permisos de escritura
     if (!is_dir($rutaDir)) {
-        @mkdir($rutaDir, 0777, true);
-    }
-
-    if (!is_writable($rutaDir)) {
-        responder(500, ['error' => 'La carpeta subidas/ no tiene permisos de escritura en el servidor.']);
+        @mkdir($rutaDir, 0755, true);
     }
 
     $ruta = $rutaDir . $archivo;
-    
-    // Intentar mover el archivo y capturar el error exacto si falla
     if (!move_uploaded_file($foto['tmp_name'], $ruta)) {
-        $errorSrv = error_get_last();
-        responder(500, ['error' => 'Fallo al mover archivo: ' . ($errorSrv['message'] ?? 'Error desconocido en disco')]);
+        $errSrv = error_get_last();
+        responder(500, ['error' => 'No se pudo mover el archivo: ' . ($errSrv['message'] ?? 'Error desconocido')]);
     }
 
     // Registro en la base de datos de Railway
@@ -70,11 +66,12 @@ try {
 
     responder(201, ['archivo' => $archivo, 'url' => 'subidas/' . $archivo]);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     if (isset($ruta) && file_exists($ruta)) {
-        unlink($ruta);
+        @unlink($ruta); // Borra el archivo si falla la base de datos
     }
+    if (ob_get_length()) ob_clean();
     http_response_code(500);
-    echo json_encode(['error' => 'Excepción: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Excepción del servidor: ' . $e->getMessage()]);
     exit;
 }
