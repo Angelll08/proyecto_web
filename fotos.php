@@ -51,5 +51,6 @@ require 'sesion.php';
         </div>
     </div>
     <script src="foto.js"></script>
+    <script src="tracker.js"></script>
 </body>
 </html>
