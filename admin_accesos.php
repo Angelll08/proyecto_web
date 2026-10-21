@@ -24,6 +24,16 @@ if (!function_exists('e')) {
     }
 }
 
+if (!function_exists('horaMx')) {
+    // La base guarda la hora en UTC: aquí se convierte a hora de México
+    function horaMx($fechaUtc)
+    {
+        $fecha = new DateTime($fechaUtc, new DateTimeZone('UTC'));
+        $fecha->setTimezone(new DateTimeZone('America/Mexico_City'));
+        return $fecha->format('d/m/Y H:i:s');
+    }
+}
+
 // Resumen
 $resumen = $pdo->query(
     'SELECT COUNT(*) AS total,
@@ -135,7 +145,7 @@ $filas = $pdo->query(
 							<th>Usuario</th>
 							<th>IP</th>
 							<th>Navegador / Dispositivo</th>
-							<th>Fecha</th>
+							<th>Fecha (hora de México)</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -145,7 +155,7 @@ $filas = $pdo->query(
 								<td><?= e($f['nombre']) ?></td>
 								<td><?= e($f['ip']) ?></td>
 								<td class="navegador"><?= e($f['navegador']) ?></td>
-								<td><?= e($f['creado_en']) ?></td>
+								<td><?= e(horaMx($f['creado_en'])) ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
