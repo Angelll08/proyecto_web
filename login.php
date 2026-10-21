@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require 'conexion.php';
+require_once 'ip.php'; // NUEVO
 
 if (!function_exists('e')) {
     function e($valor) {
@@ -35,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['nombre']     = $usuario['nombre'];
         $_SESSION['rol']        = $usuario['rol'] ?? 'usuario';
+
+        registrarAcceso($pdo); // NUEVO: guarda IP y navegador
 
         header('Location: menu.php');
         exit;
