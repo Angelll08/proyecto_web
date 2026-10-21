@@ -39,7 +39,7 @@ try {
     $usuario = preg_replace('/[^A-Za-z0-9]/', '', $_SESSION['nombre'] ?? 'usuario') ?: 'usuario';
     $archivo = $usuario . '_' . date('Ymd-His') . '_' . bin2hex(random_bytes(2)) . '.' . $tipos[$tipo];
 
-    // Asegurar que la carpeta subidas exista en el servidor
+    // Ruta segura hacia la carpeta subidas en la raíz del proyecto
     $rutaDir = __DIR__ . '/../subidas/';
     if (!is_dir($rutaDir)) {
         mkdir($rutaDir, 0755, true);
