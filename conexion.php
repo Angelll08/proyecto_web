@@ -13,7 +13,6 @@ $conexion = null;
 
 // 1. Conexión mediante MySQLi (opcional / protegida con try-catch para evitar fatales)
 try {
-    // Deshabilitar temporalmente los warnings nativos de mysqli para manejarlos con excepciones si es necesario
     mysqli_report(MYSQLI_REPORT_OFF);
     $conn = @new mysqli($host, $user, $password, $database, (int)$port);
     if (!$conn->connect_error) {
@@ -33,7 +32,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES   => false,
     ]);
 } catch (PDOException $e) {
-    die("Error crítico de conexión PDO: " . $e.getMessage());
+    die("Error crítico de conexión PDO: " . $e->getMessage());
 }
 
 // Iniciar sesión de forma segura si no está iniciada
