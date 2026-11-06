@@ -1,5 +1,5 @@
 <?php
-// conexion.php - Soporte para MySQLi y PDO
+// conexion.php - Soporte optimizado con respaldo para PDO
 
 // Obtener credenciales desde las variables de entorno de Render o valores por defecto
 $host     = getenv('DB_HOST') ?: 'localhost';
@@ -8,16 +8,23 @@ $password = getenv('DB_PASS') ?: '';
 $database = getenv('DB_NAME') ?: 'railway';
 $port     = getenv('DB_PORT') ?: 3306;
 
-// 1. Conexión mediante MySQLi (por si algún otro módulo la usa)
-$conn = new mysqli($host, $user, $password, $database, (int)$port);
-$conexion = $conn;
+$conn = null;
+$conexion = null;
 
-if ($conn->connect_error) {
-    die("Error de conexión MySQLi: " . $conn->connect_error);
+// 1. Conexión mediante MySQLi (opcional / protegida con try-catch para evitar fatales)
+try {
+    // Deshabilitar temporalmente los warnings nativos de mysqli para manejarlos con excepciones si es necesario
+    mysqli_report(MYSQLI_REPORT_OFF);
+    $conn = @new mysqli($host, $user, $password, $database, (int)$port);
+    if (!$conn->connect_error) {
+        $conn->set_charset("utf8mb4");
+        $conexion = $conn;
+    }
+} catch (Exception $e) {
+    // Si falla MySQLi, lo ignoramos para que PDO tome el control principal
 }
-$conn->set_charset("utf8mb4");
 
-// 2. Conexión mediante PDO (requerida para login.php y registro.php)
+// 2. Conexión mediante PDO (Requerida y principal para login.php y registro.php)
 try {
     $dsn = "mysql:host=$host;port=$port;dbname=$database;charset=utf8mb4";
     $pdo = new PDO($dsn, $user, $password, [
@@ -26,7 +33,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES   => false,
     ]);
 } catch (PDOException $e) {
-    die("Error de conexión PDO: " . $e->getMessage());
+    die("Error crítico de conexión PDO: " . $e.getMessage());
 }
 
 // Iniciar sesión de forma segura si no está iniciada
